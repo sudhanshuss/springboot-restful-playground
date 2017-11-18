@@ -12,7 +12,9 @@ public class HelloWorldbean {
 		this.message = message;
 	}
 
-	
+	public String getMessage() {
+		return message;
+	}
 	
 	
 
