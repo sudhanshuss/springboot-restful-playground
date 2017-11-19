@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.sid.rest.webservices.springbootrestfulplayground.exception.UserNotFoundException;
 import com.sid.rest.webservices.springbootrestfulplayground.pojo.User;
 import com.sid.rest.webservices.springbootrestfulplayground.service.UserDaoService;
 
@@ -28,7 +29,12 @@ public class UserController {
 
 	@GetMapping("/users/{id}")
 	public User retrieveUser(@PathVariable int id) {
-		return service.findOne(id);
+		User user = service.findOne(id);
+		
+		if(user == null) {
+			throw new UserNotFoundException("id-"+id);
+		}
+		return user;
 	}
 
 	@PostMapping("/users")
