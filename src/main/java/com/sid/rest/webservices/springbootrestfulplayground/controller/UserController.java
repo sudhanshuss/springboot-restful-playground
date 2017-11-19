@@ -1,11 +1,14 @@
 package com.sid.rest.webservices.springbootrestfulplayground.controller;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +34,20 @@ public class UserController {
 	}
 
 	@GetMapping("/users/{id}")
-	public User retrieveUser(@PathVariable int id) {
+	public Resource<User> retrieveUser(@PathVariable int id) {
 		User user = service.findOne(id);
-		if(user == null) {
-			throw new UserNotFoundException("id-"+id);
+		if (user == null) {
+			throw new UserNotFoundException("id-" + id);
 		}
-		return user;
+
+		// "all-users", SERVER_PATH + "/users"
+		// retrieveAllUsers
+		Resource<User> resource = new Resource<User>(user);
+
+		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+
+		resource.add(linkTo.withRel("all-users"));
+		return resource;
 	}
 	
 	@DeleteMapping("/users/{id}")
